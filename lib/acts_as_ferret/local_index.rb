@@ -58,6 +58,10 @@ module ActsAsFerret
     def bulk_index(class_name, ids, options)
       ferret_index.bulk_index(class_name.constantize, ids, options)
     end
+    
+    def index_model(class_name)
+      ferret_index.index_model(class_name.constantize)
+    end
 
     # Parses the given query string into a Ferret Query object.
     def process_query(query, options = {})

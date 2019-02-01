@@ -6,7 +6,7 @@ module ActsAsFerret
     def find_records(q, options = {}, ar_options = {})
       late_pagination = options.delete :late_pagination
       total_hits, result = if options[:lazy]
-        logger.warn "find_options #{ar_options} are ignored because :lazy => true" unless ar_options.empty?
+        logger.warn "find_options #{ar_options} are ignored because lazy: true" unless ar_options.empty?
         lazy_find q, options
       else
         ar_find q, options, ar_options
@@ -25,9 +25,9 @@ module ActsAsFerret
       logger.debug "lazy_find: #{q}"
       result = []
       rank   = 0
-      total_hits = find_ids(q, options) do |model, id, score, data|
+      total_hits = find_ids(q, options) do |model, id, score, field_scores, data|
         logger.debug "model: #{model}, id: #{id}, data: #{data}"
-        result << FerretResult.new(model, id, score, rank += 1, data)
+        result << FerretResult.new(model, id, score, field_scores, rank += 1, data)
       end
       [ total_hits, result ]
     end
@@ -51,7 +51,7 @@ module ActsAsFerret
         if options[:limit] != :all || options[:page] || options[:offset] || ar_options[:limit] || ar_options[:offset]
           # our ferret result has been limited, so we need to re-run that
           # search to get the full result set from ferret.
-          new_th, id_arrays = find_id_model_arrays( q, options.merge(:limit => :all, :offset => 0) )
+          new_th, id_arrays = find_id_model_arrays( q, options.merge(limit: :all, offset: 0) )
           # Now ask the database for the total size of the final result set.
           total_hits = count_records( id_arrays, ar_options )
         else
@@ -90,7 +90,7 @@ module ActsAsFerret
     def find_id_model_arrays(q, options)
       id_arrays = {}
       rank = 0
-      total_hits = find_ids(q, options) do |model, id, score, data|
+      total_hits = find_ids(q, options) do |model, id, score, field_scores, data|
         id_arrays[model] ||= {}
         id_arrays[model][id] = [ rank += 1, score ]
       end
@@ -115,15 +115,16 @@ module ActsAsFerret
       query_to_s = query.to_s.respond_to?('force_encoding') ? query.to_s.force_encoding('UTF-8') : query
       logger.debug "query: #{query_to_s}\n-->#{q_to_s}"
       s = searcher
-      total_hits = s.search_each(q, options) do |hit, score|
+      total_hits = s.search_each(q, options) do |hit, (score, field_scores)|
+        logger.debug "score = #{score} field_scores = #{field_scores.inspect}"
         doc = s[hit]
         model = doc[:class_name]
         # fetch stored fields if lazy loading
         data = extract_stored_fields(doc, stored_fields)
         if block_given?
-          yield model, doc[:id], score, data
+          yield model, doc[:id], score, field_scores, data
         else
-          result << { :model => model, :id => doc[:id], :score => score, :data => data }
+          result << { model: model, id: doc[:id], score: score, field_scores: field_scores, data: data }
         end
       end
       #logger.debug "id_score_model array: #{result.inspect}"

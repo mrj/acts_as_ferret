@@ -57,7 +57,7 @@ module ActsAsFerret
       
       module ClassMethods
         # overriding aaf to return the documents fetched via RDig
-        def records_for_rebuild(batch_size = 1000, &block)
+        def records_for_rebuild(index, batch_size = 1000, &block)
           indexer = Indexer.new(batch_size, self, &block)
           configure_rdig do
             crawler = RDig::Crawler.new RDig.configuration, ActsAsFerret::logger

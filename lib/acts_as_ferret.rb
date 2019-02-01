@@ -437,7 +437,7 @@ module ActsAsFerret
   end
 
   # retrieves search result records from a data structure like this:
-  # { 'Model1' => { '1' => [ rank, score ], '2' => [ rank, score ] }
+  # { 'Model1' => { '1' => [ rank, score, field_scores], '2' => [ rank, score, field_scores ] }
   #
   # TODO: in case of STI AR will filter out hits from other 
   # classes for us, but this
@@ -479,7 +479,7 @@ module ActsAsFerret
 
       # set scores and rank
       tmp_result.each do |record|
-        record.ferret_rank, record.ferret_score = id_array[record.id.to_s]
+        record.ferret_rank, record.ferret_score, record.ferret_field_scores = id_array[record.id.to_s]
       end
       # merge with result array
       result += tmp_result

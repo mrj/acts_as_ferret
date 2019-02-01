@@ -12,8 +12,8 @@ Gem::Specification.new do |s|
 	s.rubyforge_project = 'acts_as_ferret'
 	
 	s.bindir = 'bin'
-	s.executables = ['aaf_install']
-	s.default_executable = 'aaf_install'
+	s.executables = ['acts_as_ferret']
+	#s.default_executable = 'aaf_install'
 	
 	s.platform = Gem::Platform::RUBY 
   s.required_ruby_version = '>= 1.8.7'
@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'ferret', ">= 0.11.8"
   s.add_dependency 'rails', ">= 3.0"
   
-	s.has_rdoc = true
+	#s.has_rdoc = true
   s.rdoc_options << "--charset=UTF-8" << '--title' << 'ActsAsFeret - Ferret powered full text search for Rails' << '--main' << 'README'
 
 	s.extra_rdoc_files = [

@@ -67,6 +67,14 @@ module ActsAsFerret
       def method_missing(name, *args)
         @logger.debug "\#method_missing(#{name.inspect}, #{args.inspect})"
 
+        # queueing
+        #
+        if args.last.is_a?(Hash) && args.last.has_key?(:low_priority)
+          if (args.pop)[:low_priority]
+            Thread.current.priority -= 1
+            Thread.pass
+          end
+        end
 
         index_name = args.shift
         index = if name.to_s =~ /^multi_(.+)/

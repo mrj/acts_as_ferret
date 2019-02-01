@@ -17,6 +17,7 @@ module ActsAsFerret
       @model = model.constantize
       @id = id
       @ferret_score = score
+      @ferret_field_scores = field_scores
       @ferret_rank  = rank
       @data = data
       @use_record = false
@@ -27,7 +28,9 @@ module ActsAsFerret
     end
 
     def method_missing(method, *args, &block)
-      if (@ar_record && @use_record) || !@data.has_key?(method)
+      if method == :highlight
+        @model.send method, id, *args
+      elsif (@ar_record && @use_record) || !@data.has_key?(method)
         to_record.send method, *args, &block
       else
         @data[method]
@@ -35,7 +38,7 @@ module ActsAsFerret
     end
 
     def respond_to?(name)
-      [ :ferret_score, :ferret_rank,
+      [ :ferret_score, :ferret_rank, :highlight,
         :inspect, :method_missing, :respond_to?, :to_record, :to_param, :id
       ].include?(name) ||
         @data.has_key?(name.to_sym) || to_record.respond_to?(name)

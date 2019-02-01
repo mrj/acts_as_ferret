@@ -70,7 +70,7 @@ module ActsAsFerret
     end
 
     # runs across all records yielding those to be indexed when the index is rebuilt
-    def records_for_rebuild(batch_size = 1000)
+    def records_for_rebuild(index, batch_size = 1000)
       transaction do
         if use_fast_batches?
           offset = 0
@@ -106,7 +106,11 @@ module ActsAsFerret
     def aaf_index
       @index ||= ActsAsFerret::get_index(aaf_configuration[:name])
     end 
-    
+
+    def highlight(id, query, options = {})
+      aaf_index.highlight(id, self.to_s, query, options)
+    end
+  
     # Finds instances by searching the Ferret index. Terms are ANDed by default, use 
     # OR between terms for ORed queries. Or specify +:or_default => true+ in the
     # +:ferret+ options hash of acts_as_ferret.

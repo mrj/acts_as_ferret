@@ -35,9 +35,9 @@ to your Gemfile. Bundler will pull in the jk-ferret gem as a dependency, which i
 Ferret gem built by me based on Ferret's master branch on github (the latest official ferret gem is 0.11.6
 and is missing quite some bug fixes that happened since then).
 
-After running 'bundle install', have bundler execute the aaf_install script:
+After running 'bundle install', have bundler execute the acts_as_ferret script:
 
-<tt>bundle exec aaf_install</tt>
+<tt>bundle exec acts_as_ferret</tt>
 
 This will copy the capistrano recipe, the ferret server config and it's startup script
 into your project.
@@ -54,7 +54,7 @@ To set up your Rails project to use the acts_as_ferret gem, add this to your pro
 
 <tt>config.gem 'acts_as_ferret', :version => '~> 0.4.8'</tt>
 
-With the gem installed, change into your RAILS_ROOT and run the supplied aaf_install script.
+With the gem installed, change into your RAILS_ROOT and run the supplied acts_as_ferret script.
 This will copy rake tasks, capistrano recipes and the ferret server config and startup script
 into your project.
 

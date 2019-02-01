@@ -48,7 +48,7 @@
                                                    :model => model, :index => self, :reindex => true)
       logger.info "reindexing model #{model.name}"
 
-      model.records_for_rebuild(@batch_size) do |records, offset|
+      model.records_for_rebuild(self, @batch_size) do |records, offset|
         bulk_indexer.index_records(records, offset)
       end
     end
