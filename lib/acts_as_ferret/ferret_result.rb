@@ -13,7 +13,7 @@ module ActsAsFerret
     include ResultAttributes
     attr_accessor :id
 
-    def initialize(model, id, score, rank, data = {})
+    def initialize(model, id, score, field_scores, rank, data = {})
       @model = model.constantize
       @id = id
       @ferret_score = score
